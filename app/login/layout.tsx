@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { SecurityPattern } from "@/resources/security-pattern";
+import { redirect } from "next/navigation";
+import { features } from "../config/features";
 
 export const metadata: Metadata = {
   title: "Login | TechPro",
@@ -11,10 +12,13 @@ export default function LoginLayout({
 }: {
   children: React.ReactNode;
 }) {
+  if (!features.sistemaGestao) {
+    redirect("/");
+  }
+
   return (
-    <div className="relative min-h-full flex flex-1 items-center justify-center bg-background-dark px-6 py-12 overflow-hidden">
-      <SecurityPattern color="text-cyan/10" />
-      <div className="relative z-10 w-full flex justify-center">{children}</div>
+    <div className="min-h-full flex flex-1 items-center justify-center bg-background-dark px-6 py-12">
+      {children}
     </div>
   );
 }

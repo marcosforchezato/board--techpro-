@@ -22,17 +22,17 @@ export default function LoginPage() {
 
   return (
     <div className="w-full max-w-md">
-      <div className="flex flex-col items-center mb-8">
-        <Image
-          src="/logo-techpro.svg"
-          alt="TechPro"
-          width={140}
-          height={48}
-          priority
-        />
-      </div>
-
       <div className="rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-sm p-8 shadow-xl">
+        <div className="flex flex-col items-center mb-8">
+          <Image
+            src="/logo-techpro.svg"
+            alt="TechPro"
+            width={140}
+            height={48}
+            priority
+          />
+        </div>
+
         <h1 className="text-xl font-semibold text-white mb-1 text-center">
           Acessar sistema
         </h1>
@@ -70,7 +70,7 @@ export default function LoginPage() {
           </div>
 
           <div className="flex items-center justify-between text-sm">
-            <Checkbox id="remember" name="remember" label="Lembrar-me" />
+            <Checkbox id="remember" name="remember" label="Lembrar de mim" />
 
             <Link
               href="/login/recuperar-senha"

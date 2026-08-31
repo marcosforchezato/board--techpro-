@@ -5,8 +5,10 @@
   --black: #121212;
   --light-gray: #edf1f7;
   --gray: #a09fa4;
+  --dark-gray: #4c4c52;
   --green: #2aae7e;
   --cyan: #0f8bff;
+  --blue: #254792;
   --dark-blue: #0a1429;
 }
 
@@ -17,8 +19,10 @@
   --color-foreground-dark: var(--white);
   --color-light-gray: var(--light-gray);
   --color-gray: var(--gray);
+  --color-dark-gray: var(--dark-gray);
   --color-green: var(--green);
   --color-cyan: var(--cyan);
+  --color-blue: var(--blue);
   --color-dark-blue: var(--dark-blue);
   --font-sans: var(--font-inter);
 }
