@@ -6,30 +6,27 @@
 
 ## 1. Problema
 
-A TechPro é uma empresa de segurança eletrônica e automação (câmeras, alarmes,
-controle de acesso e automação com IA). Hoje o contato com o cliente acontece de
-forma dispersa: pedidos de orçamento, chamados de suporte técnico, solicitações
-de manutenção e propostas de novos equipamentos chegam por WhatsApp, telefone ou
-e-mail, sem um registro único.
+A TechPro é uma empresa de segurança eletrônica e automação (câmeras, alarmes, controle de acesso e automação com IA). O principal gargalo da operação atual é a fragmentação das informações ao longo de todo o ciclo de atendimento. Os dados dos clientes ficam dispersos entre WhatsApp, ligações, visitas, planilhas e sistemas paralelos, gerando uma série de impactos negativos:
 
-- A equipe da TechPro não tem uma visão ampla de quantas solicitações estão
-  em aberto, nem em que estágio cada uma está.
-- O cliente não tem como saber se seu pedido de orçamento ou chamado de suporte já
-  foi visto, nem qual o andamento.
-- O histórico de um cliente (quantos serviços já contratou, o que já foi instalado)
-  não existe de maneira concreta.s
-- Solicitações se perdem no meio de conversas de WhatsApp quando o volume cresce.
+Perda de histórico e rastreabilidade: Não há um registro único. Informações sobre o que foi combinado no orçamento, quais equipamentos foram instalados e o contexto de cada cliente se perdem em conversas informais ou dependem da memória da equipe.
+
+Desconexão entre comercial e execução: Há uma quebra de continuidade. Quando um orçamento é aprovado, o planejamento da visita e a alocação de técnicos ocorrem em controles paralelos, obrigando a equipe a reconstruir o contexto manualmente.
+
+Controle de garantias ineficiente: Acompanhar quais equipamentos estão cobertos, os prazos de garantia (da TechPro e de fornecedores) e emitir alertas preventivos é hoje um processo manual, elevando o risco de falhas e prejuízos.
+
+Falta de visibilidade: A equipe interna não consegue responder rapidamente em que estágio está uma negociação ou serviço. Da mesma forma, o cliente fica sem transparência sobre o andamento de seus pedidos de orçamento ou chamados de suporte.
 
 ## 2. Solução
 
-Um site institucional onde o visitante solicita orçamento, suporte técnico ou
-manutenção através de formulários. Cada solicitação enviada vira um registro no
-painel interno da TechPro, organizado com status: novo, em atendimento e
-concluído. A equipe acompanha, atualiza o status e mantém um cadastro de clientes
-que reúne o histórico de solicitações de cada um.
+Implementação de um sistema centralizado de gestão de atendimento que unifique o fluxo de ponta a ponta, composto por um portal de entrada e um painel de controle operacional.
 
-Com isso a solicitação para de ser mensagem avulsa e passa a ser registro com
-status, ligado a um cliente identificável.
+Captação Estruturada: Um site institucional onde o visitante solicita orçamentos, suporte técnico ou manutenção via formulários. Cada solicitação entra automaticamente no sistema interno, eliminando a dependência exclusiva de mensagens avulsas no WhatsApp.
+
+Visão Única do Cliente: Um cadastro centralizado que reúne todo o histórico de um cliente: chamados anteriores, orçamentos (enviados e aprovados), decisões comerciais e ordens de serviço executadas.
+
+Fluxo Contínuo (Comercial e Execução): O painel acompanha a evolução de cada etapa através de status claros (ex: Novo, Orçamento Enviado, Aprovado, Agendado, Em Execução, Concluído). A transição da venda para a equipe técnica ocorre dentro da mesma plataforma, preservando o contexto.
+
+Módulo de Ativos e Garantias: Registro dos equipamentos vinculados a cada cliente e serviço, com acompanhamento automatizado de prazos e disparo de notificações para a equipe quando uma garantia estiver próxima do vencimento.
 
 > **Observações**: por não ter sido possível validar o
 > escopo completo diretamente com o cliente até o momento desta entrega, as
@@ -40,57 +37,77 @@ status, ligado a um cliente identificável.
 
 ## 3. Escopo
 
-| Ordem | Parte                                                           | Por que nesta posição                                          |
-| ----- | --------------------------------------------------------------- | -------------------------------------------------------------- |
-| 1     | Site institucional (apresentação, serviços, contato)            | é a porta de entrada; sem ele não há solicitação para gerir    |
-| 2     | Login da equipe interna e separação de acesso                   | sem isso não há a quem mostrar as solicitações                 |
-| 3     | Envio de solicitação pelo site (orçamento, suporte, manutenção) | é o que tira o contato do WhatsApp e cria o primeiro registro  |
-| 4     | Painel de solicitações com sistema de status                    | é a tela que resolve o problema da equipe                      |
-| 5     | Cadastro de clientes com histórico                              | dá contexto à solicitação: quem é, o que já contratou          |
-| 6     | Atribuição de responsável e atualização de status               | fecha o ciclo: alguém é dono da solicitação até ela concluir   |
-| 7     | Módulo de sistema desativável por contrato                      | permite vender o site sozinho, sem o painel, a outros clientes |
+| Ordem | Parte                                              | Por que nesta posição                                                                                                               |
+| ----- | -------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| 1     | Portal de captação (Site Institucional)            | É a porta de entrada padronizada para novos orçamentos, manutenções e chamados, eliminando a dependência inicial do WhatsApp.       |
+| 2     | Autenticação e Perfis de Acesso                    | Garante que vendedores, técnicos e administradores vejam apenas as informações e telas pertinentes às suas funções.                 |
+| 3     | Cadastro 360º de Clientes (CRM)                    | Centraliza o histórico. É fundamental para que a equipe saiba rapidamente o que o cliente já orçou, aprovou ou instalou no passado. |
+| 4     | Gestão de Orçamentos e Ordens de Execução (Kanban) | Resolve a desconexão comercial/técnico. O orçamento aprovado evolui para uma execução dentro do mesmo fluxo, sem perda de contexto. |
+| 5     | Módulo de Ativos e Garantias                       | Cobre a falha crítica de perda de prazos. Vincula o equipamento instalado ao cliente para rastreabilidade e ações preventivas.      |
+| 6     | Motor de Notificações e Alertas                    | Automatiza a lembrança de prazos de garantia ou retornos pendentes, tirando a responsabilidade da "memória" humana.                 |
+| 7     | Arquitetura modularizada (APIs)                    | Permite que os módulos funcionem de forma independente e prepara o sistema para futuras integrações (estoque atual ou WhatsApp).    |
+|       |
 
 ## 4. Requisitos funcionais
 
-| ID   | Requisito                                                                                                                            |
-| ---- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| RF01 | O sistema permite que um visitante do site envie uma solicitação de orçamento, informando nome, contato e descrição                  |
-| RF02 | O sistema permite que um visitante do site envie uma solicitação de suporte técnico ou manutenção                                    |
-| RF03 | O sistema permite que um colaborador da TechPro acesse o painel interno com usuário e senha                                          |
-| RF04 | O sistema exibe ao colaborador a lista de solicitações organizadas por status: novo, em atendimento, concluído                       |
-| RF05 | O sistema permite ao colaborador mover uma solicitação entre os status do funil                                                      |
-| RF06 | O sistema associa cada solicitação a um cliente, criando um novo cadastro quando o contato é inédito                                 |
-| RF07 | O sistema exibe o histórico de solicitações anteriores ao abrir o cadastro de um cliente                                             |
-| RF08 | O sistema permite ao colaborador atribuir uma solicitação a um responsável da equipe                                                 |
-| RF09 | O sistema registra data e hora de criação e de cada mudança de status de uma solicitação                                             |
-| RF10 | O sistema impede que um colaborador sem permissão de administrador altere o cadastro de outro colaborador                            |
-| RF11 | O sistema permite habilitar ou desabilitar o acesso ao painel interno por configuração de ambiente, sem alterar o site institucional |
+| ID   | Requisito                                                                                                                                                                                                             |
+| ---- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| RF01 | O sistema deve exigir autenticação (login e senha) para que colaboradores acessem o painel interno.                                                                                                                   |
+| RF02 | O sistema deve permitir que usuários com perfil "Administrador" criem, editem e desativem contas de colaboradores, atribuindo a eles perfis de acesso específicos (ex: Admin, Comercial, Técnico).                    |
+| RF03 | O sistema deve disponibilizar formulários no site para que visitantes solicitem orçamentos, manutenções ou suporte, gerando um registro automático no painel interno.                                                 |
+| RF04 | O sistema deve permitir que um colaborador da TechPro registre manualmente uma nova solicitação originada de outros canais (WhatsApp, telefone, visita presencial), indicando a origem do contato.                    |
+| RF05 | O sistema deve associar toda solicitação a um cliente, criando um novo cadastro quando o contato informado for inédito e vinculando ao cadastro existente quando já houver correspondência, para evitar duplicações.  |
+| RF06 | O sistema deve consolidar um "Cadastro 360º" por cliente, exibindo em uma única tela o histórico unificado de solicitações, orçamentos, serviços executados, equipamentos instalados e notas internas.                |
+| RF07 | O sistema deve exibir as solicitações e orçamentos em um painel visual (Kanban) organizado por status do funil (ex: Novo, Orçamento Enviado, Aprovado, Em Execução, Concluído).                                       |
+| RF08 | O sistema deve permitir a atribuição de responsáveis distintos por etapa do serviço (ex: um vendedor para a fase comercial e um técnico para a execução), mantendo o histórico de transferências de responsabilidade. |
+| RF09 | O sistema deve permitir que colaboradores adicionem comentários e "notas internas" dentro de uma solicitação ou cadastro de cliente, registrando o resumo de conversas e orientações.                                 |
+| RF10 | O sistema deve permitir a criação de orçamentos padronizados diretamente na plataforma, vinculando-os à solicitação original do cliente.                                                                              |
+| RF11 | O sistema deve converter automaticamente um orçamento com status "Aprovado" em uma Ordem de Execução (OS), mantendo todo o descritivo técnico e histórico anexados.                                                   |
+| RF12 | O sistema deve permitir que técnicos registrem os equipamentos instalados durante a execução, informando as datas de início e fim das garantias do fabricante e da própria TechPro.                                   |
+| RF13 | O sistema deve disparar notificações no painel sempre que uma garantia estiver a 30 dias do vencimento, informando claramente qual das duas coberturas (fabricante ou TechPro) está expirando.                        |
+| RF14 | O sistema deve registrar um log imutável de data, hora e usuário para cada criação de cadastro, mudança de status, emissão de orçamento ou adição de nota interna.                                                    |
+| RF15 | O sistema deve aplicar controle de permissões, impedindo que usuários com perfil "Técnico" alterem valores financeiros de orçamentos, restritos aos perfis "Comercial" e "Admin".                                     |
 
 ## 5. Requisitos não funcionais
 
-| ID    | Requisito                                                                             | Como se verifica                                                 |
-| ----- | ------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
-| RNF01 | A lista de solicitações carrega em até 2s com 500 registros cadastrados               | medição no navegador com base de teste                           |
-| RNF02 | Senhas são armazenadas com hash, nunca em texto puro                                  | inspeção da tabela de usuários                                   |
-| RNF03 | Um colaborador nunca altera dados de outro colaborador sem permissão de administrador | tentativa via chamada à API com sessão sem permissão             |
-| RNF04 | A interface é utilizável em telas pequenas, tanto no site quanto no painel            | teste no navegador do celular                                    |
-| RNF05 | O sistema roda em navegador atual, sem plugin                                         | Chrome e Firefox em versão corrente                              |
-| RNF06 | O site institucional carrega e é navegável mesmo com o módulo de painel desabilitado  | build com a flag de sistema desligada, checagem manual das rotas |
+| ID    | Requisito                                                                                                                                                                 | Como se verifica                                                                                                           |
+| ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| RNF01 | Desempenho: O painel de gestão deve carregar a painel visual e o histórico 360º do cliente em até 2 segundos, mesmo com milhares de registros.                            | Medição de tempo de resposta da API no navegador usando base de dados populada com volume de teste.                        |
+| RNF02 | Segurança (Dados): Senhas de usuários e dados sensíveis de clientes devem ser armazenados com criptografia/hash, nunca em texto puro.                                     | Inspeção direta no banco de dados e auditoria do código de autenticação.                                                   |
+| RNF03 | Segurança (Autorização): A API deve bloquear qualquer tentativa de alteração de dados feita por um usuário sem os privilégios necessários.                                | Testes de requisição direta (Postman/Insomnia) simulando tokens de acesso com perfis inferiores tentando ações restritas.  |
+| RNF04 | Usabilidade (Mobile First): A interface da Ordem de Execução e do histórico de garantias deve ser perfeitamente utilizável em telas de smartphones.                       | Testes de interface simulando resoluções de dispositivos móveis, garantindo que técnicos em campo operem sem dificuldades. |
+| RNF05 | Confiabilidade (Jobs): O motor de verificação de garantias deve rodar de forma assíncrona, garantindo que alertas sejam processados diariamente sem impactar a navegação. | Verificação dos logs do servidor (CRON jobs ou workers) registrando a varredura diária de prazos.                          |
+| RNF06 | Interoperabilidade: O back-end deve ser construído através de APIs REST ou GraphQL documentadas.                                                                          | Existência de documentação interativa (ex: Swagger/OpenAPI) refletindo todos os endpoints do sistema.                      |
 
 ## 6. Histórias de usuário
 
-1. Como visitante do site, quero solicitar um orçamento pelo próprio site, para não
-   precisar ligar ou mandar mensagem em horário comercial.
-2. Como cliente, quero solicitar suporte técnico ou manutenção pelo site, para
-   registrar meu pedido sem depender de resposta imediata por WhatsApp.
-3. Como colaborador da TechPro, quero ver todas as solicitações em um só lugar,
-   para não perder pedidos no meio de conversas separadas.
-4. Como colaborador da TechPro, quero alterar o status dos chamados, para saber o
-   que já foi atendido e o que ainda falta.
-5. Como colaborador da TechPro, quero ver o histórico de um cliente ao abrir seu
-   cadastro, para entender o que ele já contratou antes de atender um novo pedido.
-6. Como colaborador da TechPro, quero atribuir uma solicitação a um responsável,
-   para que alguém específico seja dono do atendimento até ele concluir.
+Visitante e cliente:
+
+1. Como visitante do site, quero solicitar um orçamento pelo próprio site, para não precisar ligar ou mandar mensagem em horário comercial.
+2. Como cliente, quero solicitar manutenção ou suporte técnico pelo site, para registrar meu pedido sem depender de alguém ver minha mensagem no WhatsApp.
+
+Comercial (quem atende e negocia):
+
+3. Como vendedor, quero ver todas as solicitações em um painel único, organizado por status, para saber quantas estão em aberto e em que estágio cada uma está.
+4. Como vendedor, quero abrir o cadastro do cliente e ver numa tela só o que já foi conversado, orçado, executado e instalado, para não reconstruir o contexto consultando WhatsApp, planilha e a memória de um colega.
+5. Como vendedor, quero montar o orçamento padronizado dentro da própria plataforma, vinculado à solicitação que o originou, para não redigitar dados e não perder a ligação com o pedido do cliente.
+6. Como vendedor, quero mover a solicitação pelo funil conforme ela avança, para que a equipe veja o andamento sem precisar perguntar.
+7. Como vendedor, quero que um orçamento aprovado vire ordem de execução automaticamente, com o descritivo e os anexos preservados, para que a execução comece sem alguém remontar o contexto do zero.
+8. Como vendedor, quero atribuir um responsável a cada etapa, para que alguém específico seja dono do orçamento e alguém específico seja dono da execução.
+
+Técnico (quem executa em campo):
+
+9. Como técnico, quero abrir a ordem de execução no celular e ver o descritivo aprovado e o histórico do cliente, para chegar ao local sabendo o que vou fazer.
+10. Como técnico, quero registrar os equipamentos instalados informando a garantia do fabricante e a da TechPro, para que o prazo fique ligado ao equipamento e não à lembrança de alguém.
+11. Como técnico, quero consultar se um equipamento ainda está em garantia ao atender um chamado, para saber na hora se a ocorrência está coberta.
+
+Administrador (quem responde pela operação):
+
+12. Como administrador, quero ser avisado no painel quando uma garantia estiver a 30 dias do vencimento, para agir de forma preventiva em vez de descobrir o prazo depois de vencido.
+13. Como administrador, quero saber quem mudou o quê e quando em cada solicitação, orçamento e garantia, para acompanhar as decisões sem depender do relato de quem participou.
+14. Como administrador, quero que o perfil técnico não altere valores de orçamento, para que a informação financeira fique restrita a quem responde por ela.
+15. Como administrador, quero definir o perfil de cada usuário, para que vendedor, técnico e administrador vejam apenas as telas da sua função.
+
 
 ## 7. Casos de uso
 
