@@ -80,8 +80,12 @@ export default function LoginPage() {
             </Link>
           </div>
 
-          <Button type="submit" loading={loading} className="mt-2">
+          <Button type="submit" loading={loading} className="mt-12">
             {loading ? "Entrando..." : "Entrar"}
+          </Button>
+
+          <Button variant="secondary">
+            <Link href="/cadastro">Criar conta</Link>
           </Button>
         </form>
       </div>
