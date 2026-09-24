@@ -1,0 +1,248 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Perfil {
+  id        String    @id @db.VarChar(2)
+  descricao String    @unique @db.VarChar(50)
+
+  usuarios Usuario[]
+
+  @@map("perfil")
+}
+
+model Usuario {
+  id           Int      @id @default(autoincrement())
+  nome         String   @db.VarChar(150)
+  perfilId     String   @map("perfilid") @db.VarChar(2)
+  email        String?  @db.VarChar(150)
+  telefone     String?  @db.VarChar(30)
+  senhaHash    String   @map("senhahash") @db.VarChar(255)
+  dataCadastro DateTime @default(now()) @map("datacadastro")
+
+  perfil        Perfil         @relation(fields: [perfilId], references: [id])
+  historicos    Historico[]
+  orcamentos    Orcamento[]
+  ordensServico OrdemServico[]
+
+  @@map("usuario")
+}
+
+model Cliente {
+  id             Int       @id @default(autoincrement())
+  nome           String    @db.VarChar(150)
+  tipoPessoa     String    @map("tipopessoa") @db.VarChar(2)
+  cgc            String    @db.VarChar(20)
+  dataNascimento DateTime? @map("datanascimento") @db.Date
+  telefone       String?   @db.VarChar(30)
+  email          String?   @db.VarChar(150)
+  endereco       String?   @db.VarChar(255)
+  cep            String?   @db.VarChar(9)
+  dataCadastro   DateTime  @default(now()) @map("datacadastro")
+
+  solicitacoes  Solicitacao[]
+  historicos    Historico[]
+  orcamentos    Orcamento[]
+  ordensServico OrdemServico[]
+  equipamentos  Equipamento[]
+
+  @@map("cliente")
+}
+
+model Canal {
+  id   String @id @db.VarChar(2)
+  nome String @unique @db.VarChar(50)
+
+  historicos Historico[]
+
+  @@map("canal")
+}
+
+model TipoRef {
+  id        String @id @db.VarChar(15)
+  descricao String @unique @db.VarChar(50)
+
+  historicos Historico[]
+  arquivos   Arquivo[]
+
+  @@map("tiporef")
+}
+
+model Solicitacao {
+  id          Int      @id @default(autoincrement())
+  clienteId   Int      @map("clienteid")
+  tipo        String   @db.VarChar(20)
+  descricao   String?
+  status      String   @db.VarChar(20)
+  dataCriacao DateTime @default(now()) @map("datacriacao")
+
+  cliente    Cliente     @relation(fields: [clienteId], references: [id])
+  orcamentos Orcamento[]
+
+  @@map("solicitacao")
+}
+
+model Historico {
+  id           Int      @id @default(autoincrement())
+  clienteId    Int      @map("clienteid")
+  usuarioId    Int?     @map("usuarioid")
+  canalId      String   @map("canalid") @db.VarChar(2)
+  dataHora     DateTime @default(now()) @map("datahora")
+  descricao    String?
+  tipoRefId    String?  @map("tiporef") @db.VarChar(15)
+  referenciaId Int?     @map("referenciaid")
+
+  cliente Cliente  @relation(fields: [clienteId], references: [id])
+  usuario Usuario? @relation(fields: [usuarioId], references: [id])
+  canal   Canal    @relation(fields: [canalId], references: [id])
+  tipoRef TipoRef? @relation(fields: [tipoRefId], references: [id])
+
+  @@map("historico")
+}
+
+model Orcamento {
+  id            Int       @id @default(autoincrement())
+  solicitacaoId Int       @map("solicitacaoid")
+  clienteId     Int       @map("clienteid")
+  usuarioId     Int?      @map("usuarioid")
+  dataCriacao   DateTime  @default(now()) @map("datacriacao")
+  dataEnvio     DateTime? @map("dataenvio")
+  dataResposta  DateTime? @map("dataresposta")
+  status        String    @db.VarChar(20)
+  valorTotal    Decimal   @default(0) @map("valortotal") @db.Decimal(12, 2)
+  observacoes   String?
+
+  solicitacao   Solicitacao     @relation(fields: [solicitacaoId], references: [id])
+  cliente       Cliente         @relation(fields: [clienteId], references: [id])
+  usuario       Usuario?        @relation(fields: [usuarioId], references: [id])
+  itens         OrcamentoItem[]
+  ordensServico OrdemServico[]
+
+  @@map("orcamento")
+}
+
+model OrcamentoItem {
+  id            Int     @id @default(autoincrement())
+  orcamentoId   Int     @map("orcamentoid")
+  descricao     String  @db.VarChar(255)
+  quantidade    Decimal @default(1) @db.Decimal(10, 2)
+  valorUnitario Decimal @map("valorunitario") @db.Decimal(12, 2)
+  desconto      Decimal @default(0) @db.Decimal(12, 2)
+  acrescimo     Decimal @default(0) @db.Decimal(12, 2)
+
+  orcamento Orcamento @relation(fields: [orcamentoId], references: [id])
+
+  @@map("orcamentoit")
+}
+
+model OrdemServico {
+  id            Int       @id @default(autoincrement())
+  orcamentoId   Int?      @map("orcamentoid")
+  clienteId     Int       @map("clienteid")
+  usuarioId     Int?      @map("usuarioid")
+  status        String    @db.VarChar(2)
+  dataPlanejada DateTime? @map("dataplanejada") @db.Date
+  dataConclusao DateTime? @map("dataconclusao") @db.Date
+  observacoes   String?
+
+  orcamento    Orcamento?    @relation(fields: [orcamentoId], references: [id])
+  cliente      Cliente       @relation(fields: [clienteId], references: [id])
+  usuario      Usuario?      @relation(fields: [usuarioId], references: [id])
+  visitas      Visita[]
+  equipamentos Equipamento[]
+
+  @@map("ordemservico")
+}
+
+model Tecnico {
+  id       Int     @id @default(autoincrement())
+  nome     String  @db.VarChar(150)
+  telefone String? @db.VarChar(30)
+
+  visitas Visita[]
+
+  @@map("tecnico")
+}
+
+model Visita {
+  id             Int       @id @default(autoincrement())
+  ordemServicoId Int       @map("ordemservicoid")
+  tecnicoId      Int?      @map("tecnicoid")
+  dataAgendada   DateTime? @map("dataagendada")
+  dataRealizada  DateTime? @map("datarealizada")
+  status         String    @db.VarChar(2)
+  valor          Decimal   @default(0) @db.Decimal(12, 2)
+  desconto       Decimal   @default(0) @db.Decimal(12, 2)
+  acrescimo      Decimal   @default(0) @db.Decimal(12, 2)
+  observacoes    String?
+
+  ordemServico OrdemServico @relation(fields: [ordemServicoId], references: [id])
+  tecnico      Tecnico?     @relation(fields: [tecnicoId], references: [id])
+
+  @@map("visita")
+}
+
+model Equipamento {
+  id             Int       @id @default(autoincrement())
+  clienteId      Int       @map("clienteid")
+  ordemServicoId Int?      @map("ordemservicoid")
+  tipo           String?   @db.VarChar(100)
+  marca          String?   @db.VarChar(100)
+  modelo         String?   @db.VarChar(100)
+  numeroSerie    String?   @map("numeroserie") @db.VarChar(100)
+  valor          Decimal   @default(0) @db.Decimal(12, 2)
+  desconto       Decimal   @default(0) @db.Decimal(12, 2)
+  acrescimo      Decimal   @default(0) @db.Decimal(12, 2)
+  dataInstalacao DateTime? @map("datainstalacao") @db.Date
+
+  cliente      Cliente       @relation(fields: [clienteId], references: [id])
+  ordemServico OrdemServico? @relation(fields: [ordemServicoId], references: [id])
+  garantias    Garantia[]
+
+  @@map("equipamento")
+}
+
+model Garantia {
+  id            Int      @id @default(autoincrement())
+  equipamentoId Int      @map("equipamentoid")
+  tipo          String   @db.VarChar(20)
+  dataInicio    DateTime @map("datainicio") @db.Date
+  dataFim       DateTime @map("datafim") @db.Date
+  status        String   @db.VarChar(2)
+
+  equipamento  Equipamento     @relation(fields: [equipamentoId], references: [id])
+  notificacoes GarantiaNotif[]
+
+  @@map("garantia")
+}
+
+model GarantiaNotif {
+  id               Int      @id @default(autoincrement())
+  garantiaId       Int      @map("garantiaid")
+  dataEnvio        DateTime @default(now()) @map("dataenvio")
+  antecedenciaDias Int?     @map("antecedenciadias")
+  status           String   @db.VarChar(2)
+
+  garantia Garantia @relation(fields: [garantiaId], references: [id])
+
+  @@map("garantianotif")
+}
+
+model Arquivo {
+  id           Int      @id @default(autoincrement())
+  tipoRefId    String   @map("tiporef") @db.VarChar(15)
+  referenciaId Int      @map("referenciaid")
+  nome         String?  @db.VarChar(255)
+  caminho      String   @db.VarChar(500)
+  tipo         String?  @db.VarChar(50)
+  tamanho      Int?
+  dataUpload   DateTime @default(now()) @map("dataupload")
+
+  tipoRef TipoRef @relation(fields: [tipoRefId], references: [id])
+
+  @@map("arquivo")
+}
