@@ -65,3 +65,43 @@ Paleta de cores extraída dos materiais oficiais da TechPro:
 </div>
 
 ---
+
+## Como executar
+
+### Pré-requisitos
+
+- Node.js 20.9 ou superior
+- npm
+- Git
+
+### Passo a passo
+
+1. Clone o repositório:
+
+   ```bash
+   git clone https://github.com/marcosforchezato/board--techpro-.git
+   ```
+
+2. Acesse a pasta do projeto:
+
+   ```bash
+   cd board--techpro-
+   ```
+
+3. Instale as dependências:
+
+   ```bash
+   npm install
+   ```
+
+4. Inicie o servidor de desenvolvimento:
+
+   ```bash
+   npm run dev
+   ```
+
+5. Acesse [http://localhost:3000](http://localhost:3000) no navegador.
+
+Para encerrar o servidor, pressione `Ctrl+C` no terminal.
+
+---
