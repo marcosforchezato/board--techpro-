@@ -199,7 +199,6 @@ export default function Home() {
             </button>
           </div>
 
-          {/* Imagem do mascote */}
           <div className="hidden md:flex items-end justify-center h-64">
             <div className="hidden w-40 h-40 rounded-full bg-white/5 border border-white/10" />
           </div>

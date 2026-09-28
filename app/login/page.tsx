@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { Checkbox } from "../components/checkbox";
@@ -8,16 +9,46 @@ import { Button } from "../components/button";
 import { PasswordField } from "../components/password-field";
 
 export default function LoginPage() {
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    setError(null);
     setLoading(true);
 
-    // TODO: substituir pela chamada real de autenticação
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+    const formData = new FormData(e.currentTarget);
+    const username = formData.get("username") as string;
+    const password = formData.get("password") as string;
+    const remember = formData.get("remember") === "on";
 
-    setLoading(false);
+    try {
+      const response = await fetch("/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password }),
+      });
+
+      if (!response.ok) {
+        const data = await response.json().catch(() => ({}));
+        throw new Error(data.message ?? "Usuário ou senha inválidos");
+      }
+
+      const { token } = await response.json();
+
+      if (remember) {
+        localStorage.setItem("token", token);
+      } else {
+        sessionStorage.setItem("token", token);
+      }
+
+      router.push("/dashboard");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Erro ao fazer login");
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -80,12 +111,17 @@ export default function LoginPage() {
             </Link>
           </div>
 
+          <p
+            className={`text-sm text-red-400 text-center transition-opacity ${
+              error ? "opacity-100" : "opacity-0"
+            }`}
+            aria-live="polite"
+          >
+            {error || "\u00A0"}
+          </p>
+
           <Button type="submit" loading={loading} className="mt-12">
             {loading ? "Entrando..." : "Entrar"}
-          </Button>
-
-          <Button variant="secondary">
-            <Link href="/cadastro">Criar conta</Link>
           </Button>
         </form>
       </div>
