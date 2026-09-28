@@ -81,32 +81,18 @@ Módulo de Ativos e Garantias: Registro dos equipamentos vinculados a cada clien
 
 ## 6. Histórias de usuário
 
-Visitante e cliente:
-
-1. Como visitante do site, quero solicitar um orçamento pelo próprio site, para não precisar ligar ou mandar mensagem em horário comercial.
-2. Como cliente, quero solicitar manutenção ou suporte técnico pelo site, para registrar meu pedido sem depender de alguém ver minha mensagem no WhatsApp.
-
-Comercial (quem atende e negocia):
-
-3. Como vendedor, quero ver todas as solicitações em um painel único, organizado por status, para saber quantas estão em aberto e em que estágio cada uma está.
-4. Como vendedor, quero abrir o cadastro do cliente e ver numa tela só o que já foi conversado, orçado, executado e instalado, para não reconstruir o contexto consultando WhatsApp, planilha e a memória de um colega.
-5. Como vendedor, quero montar o orçamento padronizado dentro da própria plataforma, vinculado à solicitação que o originou, para não redigitar dados e não perder a ligação com o pedido do cliente.
-6. Como vendedor, quero mover a solicitação pelo funil conforme ela avança, para que a equipe veja o andamento sem precisar perguntar.
-7. Como vendedor, quero que um orçamento aprovado vire ordem de execução automaticamente, com o descritivo e os anexos preservados, para que a execução comece sem alguém remontar o contexto do zero.
-8. Como vendedor, quero atribuir um responsável a cada etapa, para que alguém específico seja dono do orçamento e alguém específico seja dono da execução.
-
-Técnico (quem executa em campo):
-
-9. Como técnico, quero abrir a ordem de execução no celular e ver o descritivo aprovado e o histórico do cliente, para chegar ao local sabendo o que vou fazer.
-10. Como técnico, quero registrar os equipamentos instalados informando a garantia do fabricante e a da TechPro, para que o prazo fique ligado ao equipamento e não à lembrança de alguém.
-11. Como técnico, quero consultar se um equipamento ainda está em garantia ao atender um chamado, para saber na hora se a ocorrência está coberta.
-
-Administrador (quem responde pela operação):
-
-12. Como administrador, quero ser avisado no painel quando uma garantia estiver a 30 dias do vencimento, para agir de forma preventiva em vez de descobrir o prazo depois de vencido.
-13. Como administrador, quero saber quem mudou o quê e quando em cada solicitação, orçamento e garantia, para acompanhar as decisões sem depender do relato de quem participou.
-14. Como administrador, quero que o perfil técnico não altere valores de orçamento, para que a informação financeira fique restrita a quem responde por ela.
-15. Como administrador, quero definir o perfil de cada usuário, para que vendedor, técnico e administrador vejam apenas as telas da sua função.
+1. Como visitante do site, quero solicitar um orçamento pelo próprio site, para não
+   precisar ligar ou mandar mensagem em horário comercial.
+2. Como cliente, quero solicitar suporte técnico ou manutenção pelo site, para
+   registrar meu pedido sem depender de resposta imediata por WhatsApp.
+3. Como colaborador da TechPro, quero ver todas as solicitações em um só lugar,
+   para não perder pedidos no meio de conversas separadas.
+4. Como colaborador da TechPro, quero alterar o status dos chamados, para saber o
+   que já foi atendido e o que ainda falta.
+5. Como colaborador da TechPro, quero ver o histórico de um cliente ao abrir seu
+   cadastro, para entender o que ele já contratou antes de atender um novo pedido.
+6. Como colaborador da TechPro, quero atribuir uma solicitação a um responsável,
+   para que alguém específico seja dono do atendimento até ele concluir.
 
 ## 7. Casos de uso
 
