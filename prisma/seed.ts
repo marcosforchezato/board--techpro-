@@ -1,3 +1,4 @@
+import bcrypt from "bcryptjs";
 import { prisma } from "../lib/prisma";
 
 async function main() {
@@ -12,11 +13,11 @@ async function main() {
 
   await prisma.canal.createMany({
     data: [
-      { id: "S", nome: "Site" },
-      { id: "W", nome: "WhatsApp" },
-      { id: "L", nome: "Ligação" },
-      { id: "P", nome: "Presencial" },
-      { id: "E", nome: "E-mail" },
+      { id: "S", descricao: "Site" },
+      { id: "W", descricao: "WhatsApp" },
+      { id: "L", descricao: "Ligação" },
+      { id: "P", descricao: "Presencial" },
+      { id: "E", descricao: "E-mail" },
     ],
     skipDuplicates: true,
   });
@@ -30,6 +31,19 @@ async function main() {
       { id: "EQP", descricao: "Equipamento" },
     ],
     skipDuplicates: true,
+  });
+
+  const senhaHash = await bcrypt.hash("0000", 10);
+
+  await prisma.usuario.upsert({
+    where: { nomeusuario: "admin" },
+    update: {},
+    create: {
+      nome: "Administrador",
+      perfilId: "A",
+      nomeusuario: "admin",
+      senha: senhaHash,
+    },
   });
 
   console.log("Seed concluído.");

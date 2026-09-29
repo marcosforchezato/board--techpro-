@@ -4,7 +4,7 @@ import { features } from "@/app/config/features";
 import { SecurityPattern } from "@/app/resources/security-pattern";
 
 export const metadata: Metadata = {
-  title: "Login | TechPro",
+  title: "Cadastro | TechPro",
   description: "Acesso ao sistema de gestão TechPro",
 };
 
