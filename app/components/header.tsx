@@ -1,26 +1,28 @@
 import Link from "next/link";
-import Image from "next/image";
+import { ShieldCheck } from "lucide-react";
 import { features } from "../config/features";
 
 const NAV_LINKS = [
   { label: "Home", href: "/" },
-  { label: "Serviços", href: "#servicos" },
-  { label: "Clientes", href: "#clientes" },
-  { label: "Institucional", href: "#institucional" },
-  { label: "Contato", href: "#contato" },
+  { label: "Serviços", href: "/servicos" },
+  { label: "Clientes", href: "/#clientes" },
+  { label: "Institucional", href: "/#institucional" },
+  { label: "Contato", href: "/#orcamento" },
 ];
 
 export function Header() {
   return (
     <header className="flex items-center justify-between px-6 py-4 bg-white border-b border-black/5">
       <Link href="/" className="flex items-center gap-2 shrink-0">
-        <Image
-          src="/logo-techpro.svg"
-          alt="TechPro"
-          width={140}
-          height={40}
-          priority
+        <ShieldCheck
+          aria-hidden="true"
+          className="text-blue"
+          size={28}
+          strokeWidth={2.5}
         />
+        <span className="text-sm font-bold tracking-tight text-dark-blue">
+          TECHPRO
+        </span>
       </Link>
 
       <nav className="hidden md:flex items-center gap-8">
