@@ -108,7 +108,7 @@ export default function Home() {
         secondaryCta={{ label: "Ver serviços", href: "#servicos" }}
       />
 
-      <section className="px-6 py-20">
+      <section id="clientes" className="px-6 py-20">
         <div className="max-w-6xl mx-auto">
           <p className="text-sm font-semibold tracking-widest text-green uppercase mb-3">
             Para todos os perfis
@@ -157,7 +157,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="px-6 py-20">
+      <section id="institucional" className="px-6 py-20">
         <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-[1fr_1.5fr] gap-10 items-center">
           <div>
             <p className="text-sm font-semibold tracking-widest text-green uppercase mb-3">
