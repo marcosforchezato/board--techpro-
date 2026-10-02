@@ -7,8 +7,9 @@ datasource db {
 }
 
 model Perfil {
-  id        String    @id @db.VarChar(2)
-  descricao String    @unique @db.VarChar(50)
+  id         String    @id @db.VarChar(2)
+  descricao  String    @unique @db.VarChar(50)
+  permissoes String    @db.Text
   usuarios  Usuario[]
 
   @@map("perfil")

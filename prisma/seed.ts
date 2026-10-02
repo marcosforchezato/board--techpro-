@@ -4,9 +4,9 @@ import { prisma } from "../lib/prisma";
 async function main() {
   await prisma.perfil.createMany({
     data: [
-      { id: "V", descricao: "Vendedor" },
-      { id: "T", descricao: "Técnico" },
-      { id: "A", descricao: "Administrador" },
+      { id: "V", descricao: "Vendedor", permissoes: "" },
+      { id: "T", descricao: "Técnico", permissoes: "" },
+      { id: "A", descricao: "Administrador", permissoes: "" },
     ],
     skipDuplicates: true,
   });
