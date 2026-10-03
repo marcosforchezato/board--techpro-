@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcrypt";
-import { Pool } from "pg";
-
-const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+import { pool } from "@/app/lib/db";
 
 export async function POST(req: NextRequest) {
   try {
@@ -25,7 +23,7 @@ export async function POST(req: NextRequest) {
 
     if (senha.length < 8) {
       return NextResponse.json(
-        { message: "Senha deve ter no mínimo 8 caracteres" },
+        { message: "A senha deve ter no mínimo 8 caracteres" },
         { status: 400 }
       );
     }
