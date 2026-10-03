@@ -7,9 +7,11 @@ datasource db {
 }
 
 model Perfil {
-  id        String    @id @db.VarChar(2)
-  descricao String    @unique @db.VarChar(50)
-  usuarios  Usuario[]
+  id         String    @id @db.VarChar(2)
+  descricao  String    @unique @db.VarChar(50)
+  permissoes String?
+  status     String?   @db.VarChar(2)
+  usuarios   Usuario[]
 
   @@map("perfil")
 }
@@ -23,6 +25,7 @@ model Usuario {
   telefone      String?        @unique @db.VarChar(30)
   senha         String         @db.VarChar(255)
   dataCadastro  DateTime?      @default(now()) @map("datacadastro") @db.Timestamp(6)
+  status        String?        @db.VarChar(2)
   historicos    Historico[]
   orcamentos    Orcamento[]
   ordensServico OrdemServico[]
@@ -43,6 +46,7 @@ model Cliente {
   endereco       String?        @db.VarChar(255)
   cep            String?        @db.VarChar(9)
   dataCadastro   DateTime?      @default(now()) @map("datacadastro") @db.Timestamp(6)
+  status         String?        @db.VarChar(2)
   equipamentos   Equipamento[]
   historicos     Historico[]
   orcamentos     Orcamento[]
@@ -55,6 +59,9 @@ model Cliente {
 model Canal {
   id         String      @id @db.VarChar(2)
   descricao  String      @unique @db.VarChar(50)
+  icone      String      @db.VarChar(50)
+  cor        String      @db.VarChar(7)
+  status     String?     @db.VarChar(2)
   historicos Historico[]
 
   @@map("canal")
@@ -63,6 +70,7 @@ model Canal {
 model TipoRef {
   id         String      @id @db.VarChar(15)
   descricao  String      @unique @db.VarChar(50)
+  status     String?     @db.VarChar(2)
   arquivos   Arquivo[]
   historicos Historico[]
 
@@ -133,19 +141,19 @@ model OrcamentoItem {
 }
 
 model OrdemServico {
-  id            Int           @id @default(autoincrement())
-  orcamentoId   Int?          @map("orcamentoid")
-  clienteId     Int           @map("clienteid")
-  usuarioId     Int?          @map("usuarioid")
-  status        String        @db.VarChar(2)
-  dataPlanejada DateTime?     @map("dataplanejada") @db.Date
-  dataConclusao DateTime?     @map("dataconclusao") @db.Date
-  observacoes   String?
-  equipamentos  Equipamento[]
-  cliente       Cliente       @relation(fields: [clienteId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  orcamento     Orcamento?    @relation(fields: [orcamentoId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  usuario       Usuario?      @relation(fields: [usuarioId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  visitas       Visita[]
+  id             Int           @id @default(autoincrement())
+  orcamentoId    Int?          @map("orcamentoid")
+  clienteId      Int           @map("clienteid")
+  usuarioId      Int?          @map("usuarioid")
+  status         String        @db.VarChar(2)
+  dataPlanejada  DateTime?     @map("dataplanejada") @db.Date
+  dataConclusao  DateTime?     @map("dataconclusao") @db.Date
+  observacoes    String?
+  equipamentos   Equipamento[]
+  cliente        Cliente       @relation(fields: [clienteId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  orcamento      Orcamento?    @relation(fields: [orcamentoId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  usuario        Usuario?      @relation(fields: [usuarioId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  visitas        Visita[]
 
   @@map("ordemservico")
 }
@@ -153,8 +161,6 @@ model OrdemServico {
 model Visita {
   id             Int          @id @default(autoincrement())
   ordemServicoId Int          @map("ordemservicoid")
-  // Antes referenciava a tabela TECNICO (removida). Agora aponta direto
-  // para USUARIO — o técnico é um usuário cujo perfilId é "T".
   usuarioId      Int?         @map("usuarioid")
   dataAgendada   DateTime?    @map("dataagendada") @db.Timestamp(6)
   dataRealizada  DateTime?    @map("datarealizada") @db.Timestamp(6)
