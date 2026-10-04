@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { Pool } from "pg";
-
-const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+import { pool } from "@/app/lib/db";
 
 export async function POST(req: NextRequest) {
   try {
@@ -24,10 +22,13 @@ export async function POST(req: NextRequest) {
     }
 
     const result = await pool.query(
-      `SELECT USUARIO.ID, USUARIO.NOME, USUARIO.NOMEUSUARIO, USUARIO.EMAIL, USUARIO.SENHA, PERFIL.DESCRICAO AS PERFIL
+      `SELECT USUARIO.ID, USUARIO.NOME, USUARIO.NOMEUSUARIO, USUARIO.EMAIL, USUARIO.SENHA, PERFIL.ID AS PERFILID,
+        PERFIL.DESCRICAO AS PERFIL
        FROM USUARIO
-       LEFT OUTER JOIN PERFIL ON PERFIL.ID = USUARIO.PERFILID
-       WHERE USUARIO.NOMEUSUARIO = $1`,
+       INNER JOIN PERFIL ON PERFIL.ID = USUARIO.PERFILID
+       WHERE USUARIO.NOMEUSUARIO = $1
+         AND USUARIO.STATUS = 'A'
+         AND PERFIL.STATUS = 'A'`,
       [username]
     );
 
@@ -50,7 +51,7 @@ export async function POST(req: NextRequest) {
     }
 
     const token = jwt.sign(
-      { sub: usuario.id, perfil: usuario.perfil },
+      { sub: String(usuario.id), perfil: usuario.perfilid },
       process.env.JWT_SECRET!,
       { expiresIn: "8h" }
     );
@@ -61,6 +62,7 @@ export async function POST(req: NextRequest) {
         id: usuario.id,
         nome: usuario.nome,
         perfil: usuario.perfil,
+        perfilId: usuario.perfilid,
       },
     });
   } catch (err) {
