@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
+
 import { features } from "@/app/config/features";
 
 export const metadata: Metadata = {
@@ -16,9 +17,5 @@ export default function ManutencoesLayout({
     redirect("/");
   }
 
-  return (
-    <div className="min-h-screen w-full" style={{ backgroundColor: "#0A1429" }}>
-      {children}
-    </div>
-  );
+  return <>{children}</>;
 }
