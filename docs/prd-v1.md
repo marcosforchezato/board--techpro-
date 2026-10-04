@@ -81,33 +81,18 @@ Módulo de Ativos e Garantias: Registro dos equipamentos vinculados a cada clien
 
 ## 6. Histórias de usuário
 
-Visitante e cliente:
-
-1. Como visitante do site, quero solicitar um orçamento pelo próprio site, para não precisar ligar ou mandar mensagem em horário comercial.
-2. Como cliente, quero solicitar manutenção ou suporte técnico pelo site, para registrar meu pedido sem depender de alguém ver minha mensagem no WhatsApp.
-
-Comercial (quem atende e negocia):
-
-3. Como vendedor, quero ver todas as solicitações em um painel único, organizado por status, para saber quantas estão em aberto e em que estágio cada uma está.
-4. Como vendedor, quero abrir o cadastro do cliente e ver numa tela só o que já foi conversado, orçado, executado e instalado, para não reconstruir o contexto consultando WhatsApp, planilha e a memória de um colega.
-5. Como vendedor, quero montar o orçamento padronizado dentro da própria plataforma, vinculado à solicitação que o originou, para não redigitar dados e não perder a ligação com o pedido do cliente.
-6. Como vendedor, quero mover a solicitação pelo funil conforme ela avança, para que a equipe veja o andamento sem precisar perguntar.
-7. Como vendedor, quero que um orçamento aprovado vire ordem de execução automaticamente, com o descritivo e os anexos preservados, para que a execução comece sem alguém remontar o contexto do zero.
-8. Como vendedor, quero atribuir um responsável a cada etapa, para que alguém específico seja dono do orçamento e alguém específico seja dono da execução.
-
-Técnico (quem executa em campo):
-
-9. Como técnico, quero abrir a ordem de execução no celular e ver o descritivo aprovado e o histórico do cliente, para chegar ao local sabendo o que vou fazer.
-10. Como técnico, quero registrar os equipamentos instalados informando a garantia do fabricante e a da TechPro, para que o prazo fique ligado ao equipamento e não à lembrança de alguém.
-11. Como técnico, quero consultar se um equipamento ainda está em garantia ao atender um chamado, para saber na hora se a ocorrência está coberta.
-
-Administrador (quem responde pela operação):
-
-12. Como administrador, quero ser avisado no painel quando uma garantia estiver a 30 dias do vencimento, para agir de forma preventiva em vez de descobrir o prazo depois de vencido.
-13. Como administrador, quero saber quem mudou o quê e quando em cada solicitação, orçamento e garantia, para acompanhar as decisões sem depender do relato de quem participou.
-14. Como administrador, quero que o perfil técnico não altere valores de orçamento, para que a informação financeira fique restrita a quem responde por ela.
-15. Como administrador, quero definir o perfil de cada usuário, para que vendedor, técnico e administrador vejam apenas as telas da sua função.
-
+1. Como visitante do site, quero solicitar um orçamento pelo próprio site, para não
+   precisar ligar ou mandar mensagem em horário comercial.
+2. Como cliente, quero solicitar suporte técnico ou manutenção pelo site, para
+   registrar meu pedido sem depender de resposta imediata por WhatsApp.
+3. Como colaborador da TechPro, quero ver todas as solicitações em um só lugar,
+   para não perder pedidos no meio de conversas separadas.
+4. Como colaborador da TechPro, quero alterar o status dos chamados, para saber o
+   que já foi atendido e o que ainda falta.
+5. Como colaborador da TechPro, quero ver o histórico de um cliente ao abrir seu
+   cadastro, para entender o que ele já contratou antes de atender um novo pedido.
+6. Como colaborador da TechPro, quero atribuir uma solicitação a um responsável,
+   para que alguém específico seja dono do atendimento até ele concluir.
 
 ## 7. Casos de uso
 
@@ -255,51 +240,68 @@ Entidades principais e relacionamentos previstos:
 
 ## 9. Decisões de implementação
 
-- O acesso ao painel interno (`/login` e rotas do sistema) é controlado por uma
-  configuração de ambiente, verificada tanto na interface quanto no servidor —
-  esconder o link não é controle de acesso (ver RNF03).
-- O site institucional e o painel interno compartilham o mesmo código-base, mas
-  são módulos independentes: o site funciona normalmente com o painel
-  desabilitado (RF11, RNF06).
-- Autorização de ações administrativas (RF10) é verificada no servidor a cada
-  requisição, nunca só na exibição do botão no front-end.
-- O visitante do site não possui login nesta versão; o cadastro de cliente é
-  criado a partir dos dados informados no formulário de solicitação, sem
-  necessidade de senha.
+- O back-end é uma API documentada (REST ou GraphQL), consumida tanto pelo site institucional quanto pelo painel interno. A documentação interativa (Swagger/OpenAPI) faz parte da entrega e reflete todos os endpoints (RNF06).
+- Autorização é verificada no servidor a cada requisição, por perfil. Esconder o botão ou a tela no front-end não é controle de acesso: o bloqueio precisa acontecer na API, inclusive para requisição feita fora da interface (RF10, RNF03).
+- O histórico é append-only. Mudança de status, criação de orçamento e alteração de garantia geram registros novos, com usuário, data e hora do servidor, e não sobrescrevem o anterior. Corrigir um dado gera uma nova versão; o registro original continua consultável. É essa decisão que faz o log de RF09 ser realmente imutável.
+- Data e hora vêm do servidor, no fuso America/Sao_Paulo, gravadas no momento da operação e nunca informadas pelo usuário. Prazos de garantia e tempo de atendimento são calculados a partir desses campos.
+- O Cadastro 360º é uma leitura única sobre o mesmo cliente. Solicitação, orçamento, ordem de execução e equipamento instalado apontam para o cliente e são carregados numa consulta só, ordenada por data. Nenhuma tela junta dados de duas origens em memória para montar o contexto (RF02, RNF01).
+- A conversão de orçamento aprovado em ordem de execução é feita no servidor, em transação única, disparada pela mudança de status e não por uma ação manual separada. A OS nasce ligada ao orçamento que a originou, com descritivo e anexos preservados (RF05).
+- O status é uma máquina de estados no servidor. Só as transições previstas no funil são aceitas; um registro concluído não volta para novo. A regra vale na API, não apenas na interface do painel (RF03).
+- A garantia pertence ao equipamento instalado, não ao cliente, e guarda dois prazos distintos: o do fabricante e o da TechPro. Um mesmo cliente pode ter itens com coberturas e vencimentos diferentes (RF06).
+- A verificação de garantias é um job assíncrono diário (CRON ou worker), não efeito colateral de alguém abrir a tela. Se ninguém entrar no sistema durante a semana, os alertas de 30 dias são gerados do mesmo jeito e ficam registrados nos logs do servidor (RF07, RNF05).
+- A notificação desta versão é o alerta no painel da equipe. Envio automático por e-mail ou WhatsApp não faz parte da entrega; a arquitetura em módulos e APIs deixa esse ponto preparado para integração futura.
+- O visitante não possui login. O cadastro de cliente é criado a partir dos dados do formulário; quando o contato informado já existe, a solicitação é associada ao cadastro existente em vez de gerar um duplicado — é o que impede o histórico de se partir de novo (RF01, RF02).
+- Arquivos (fotos da execução, PDFs de orçamento, comprovantes) vão para armazenamento de objetos; o banco guarda caminho, tipo, tamanho e metadados.
+- O sistema não substitui o controle de estoque e as ordens de serviço que a TechPro já utiliza. Os módulos são independentes e, onde houver relação, guarda-se apenas o identificador externo como referência.
 
 ## 10. Decisões de teste
 
-Os testes verificam comportamento externo, e estes precisam existir:
+Os testes verificam comportamento externo do sistema. Estes precisam existir:
 
-- Um colaborador sem permissão de administrador não altera cadastro de outro
-  colaborador (RNF03). É o teste mais importante do sistema.
-- Uma solicitação enviada pelo site sempre gera um registro associado a um
-  cliente, novo ou existente (RF06).
-- Transição de status inválida (ex.: de concluído para novo) é recusada (RF05).
-- Toda mudança de status registra data e hora (RF09).
-- Com a configuração de painel desabilitada, as rotas do sistema não ficam
-  acessíveis, mesmo por URL direta (RF11).
-- O site institucional carrega e é navegável com o painel desabilitado (RNF06).
+- Um usuário com perfil técnico não altera valor financeiro de orçamento, nem por requisição direta à API com um token de perfil inferior (RF10, RNF03). É o teste mais importante do sistema.
+- Toda solicitação enviada pelo site gera um registro no painel, associado a um cliente novo ou existente; o mesmo contato enviado duas vezes não cria dois cadastros (RF01, RF02).
+- Um orçamento aprovado gera exatamente uma ordem de execução, com descritivo e anexos preservados; aprovar de novo não gera uma segunda OS (RF05).
+- Transição de status inválida é recusada — de concluído para novo, por exemplo — e o registro permanece no status atual, com a resposta informando qual transição não é permitida (RF03).
+- Toda mudança de status grava usuário, data e hora, e o registro anterior continua consultável depois da mudança (RF09).
+- O job de garantias, rodado duas vezes no mesmo dia, não gera alerta duplicado para o mesmo equipamento (RF07, RNF05).
+- A janela de 30 dias é respeitada: um equipamento com garantia vencendo em 30 dias entra no alerta do dia; um vencendo em 31 não entra (RF07).
+- Garantia vencida aparece como vencida, e não como coberta, quando consultada no dia seguinte ao fim do prazo (RF06).
+- O Cadastro 360º traz solicitações, orçamentos, execuções e equipamentos numa mesma consulta, e carrega em até 2 segundos com a base populada com volume de teste (RF02, RNF01).
+- A ordem de execução é operável em viewport de smartphone, sem rolagem horizontal nem campo inacessível (RNF04).
+- Senha não aparece em texto puro na tabela de usuários nem em log (RNF02).
+- Todo endpoint existente está na documentação interativa, e a documentação não descreve endpoint que não existe (RNF06).
 
 ## 11. Fora de escopo
 
-- Login ou área logada para o cliente final (visitante) nesta versão.
-- Pagamento ou cobrança dentro do site ou do painel.
-- Aplicativo nativo. O sistema é web e responsivo (RNF04).
-- Agendamento automático de visitas técnicas com integração de calendário.
-- Notificação automática por e-mail ou WhatsApp sobre mudança de status (a
-  atualização é vista pelo colaborador dentro do painel).
-- Relatórios financeiros ou de faturamento.
+- Login ou área logada para o cliente final. O visitante envia a solicitação sem cadastro e acompanha o andamento pelo contato da equipe.
+- Envio automático de notificação por e-mail ou WhatsApp. O alerta desta versão é exibido no painel da equipe (RF07).
+- Integração automática com o WhatsApp, e-mail ou telefonia da empresa. A arquitetura em módulos e APIs prepara o terreno, mas a integração não faz parte desta entrega.
+- Substituição dos sistemas de estoque e de ordem de serviço já usados pela TechPro. O sistema referencia, não absorve.
+- Pagamento, cobrança, emissão de nota fiscal e relatórios financeiros ou de faturamento.
+- Assinatura digital do orçamento pelo cliente. A aprovação é registrada pela equipe, com usuário, data e hora.
+- Agendamento automático de visitas com integração de calendário e roteirização de equipes. A execução é atribuída a um técnico; a agenda e o trajeto seguem fora do sistema.
+- Monitoramento em tempo real dos equipamentos de automação instalados. O sistema registra o que foi instalado e a garantia correspondente, não se comunica com o dispositivo.
+- Aplicativo nativo. O sistema é web e responsivo, utilizável no celular do técnico em campo (RNF04).
+- Controle de comissão, ponto ou produtividade individual dos colaboradores.
 
 ## 12. Glossário
 
-| Termo         | Significado neste projeto                                                            |
-| ------------- | ------------------------------------------------------------------------------------ |
-| Visitante     | Quem acessa o site institucional sem estar autenticado                               |
-| Cliente       | Pessoa ou empresa que solicitou orçamento, suporte ou manutenção à TechPro           |
-| Colaborador   | Quem trabalha na TechPro e acessa o painel interno para atender solicitações         |
-| Administrador | Colaborador com permissão adicional para gerenciar cadastros de outros colaboradores |
-| Solicitação   | Pedido de orçamento, suporte técnico ou manutenção enviado pelo site                 |
-| Status        | O estágio da solicitação no funil: novo, em atendimento ou concluído                 |
+| Termo                  | Significado neste projeto                                                                                           |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| Visitante              | Quem acessa o site institucional sem estar autenticado e envia uma solicitação                                      |
+| Cliente                | Pessoa ou empresa que solicitou orçamento, manutenção ou suporte à TechPro                                          |
+| Cadastro 360º          | A visão única do cliente: histórico de solicitações, orçamentos, execuções e equipamentos instalados em uma só tela |
+| Solicitação            | Pedido de orçamento, manutenção ou suporte enviado pelo site, registrado no painel interno                          |
+| Orçamento              | A proposta montada na plataforma, vinculada à solicitação que a originou                                            |
+| Ordem de execução (OS) | O trabalho a ser realizado, criado automaticamente a partir de um orçamento aprovado                                |
+| Funil                  | A sequência de status pela qual a solicitação avança: novo, orçamento enviado, aprovado, em execução e concluído    |
+| Status                 | O estágio em que a solicitação ou o orçamento se encontra dentro do funil                                           |
+| Equipamento instalado  | O ativo entregue ao cliente em uma execução, com identificação e garantia própria                                   |
+| Garantia               | A cobertura de um equipamento ou serviço, com dois prazos: o do fabricante e o da TechPro                           |
+| Alerta de garantia     | A notificação gerada no painel quando faltam 30 dias para o vencimento de uma garantia                              |
+| Vendedor (Comercial)   | Quem atende a solicitação, monta o orçamento e conduz a negociação                                                  |
+| Técnico                | Quem executa a instalação ou o serviço em campo e registra os equipamentos instalados                               |
+| Administrador          | Quem gerencia perfis de acesso e responde pela operação e pelos dados financeiros                                   |
+| Log                    | O registro imutável de usuário, data e hora de cada mudança relevante no sistema                                    |
 
 ---
