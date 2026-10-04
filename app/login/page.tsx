@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
+import { ShieldCheck } from "lucide-react";
 import Link from "next/link";
 import { Checkbox } from "../components/checkbox";
 import { Button } from "../components/button";
@@ -10,6 +10,16 @@ import { PasswordField } from "../components/password-field";
 
 export default function LoginPage() {
   const router = useRouter();
+
+  useEffect(() => {
+    const token =
+      sessionStorage.getItem("token") ?? localStorage.getItem("token");
+
+    if (token) {
+      router.replace("/dashboard");
+    }
+  }, [router]);
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -35,13 +45,12 @@ export default function LoginPage() {
         throw new Error(data.message ?? "Usuário ou senha inválidos");
       }
 
-      const { token } = await response.json();
+      const { token, usuario } = await response.json();
 
-      if (remember) {
-        localStorage.setItem("token", token);
-      } else {
-        sessionStorage.setItem("token", token);
-      }
+      const armazenamento = remember ? localStorage : sessionStorage;
+
+      armazenamento.setItem("token", token);
+      armazenamento.setItem("usuario", JSON.stringify(usuario));
 
       router.push("/dashboard");
     } catch (err) {
@@ -55,13 +64,23 @@ export default function LoginPage() {
     <div className="w-full max-w-md">
       <div className="rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-sm p-8 shadow-xl">
         <div className="flex flex-col items-center mb-8">
-          <Image
-            src="/logo-techpro.svg"
-            alt="TechPro"
-            width={140}
-            height={48}
-            priority
-          />
+          <div className="flex items-center gap-2.5">
+            <div className="flex h-10 w-10 items-center justify-center rounded-[10px] bg-green">
+              <ShieldCheck
+                className="text-dark-blue"
+                size={22}
+                strokeWidth={2.4}
+              />
+            </div>
+            <div>
+              <p className="text-[18px] font-extrabold leading-tight text-white">
+                TechPro
+              </p>
+              <p className="text-[10px] font-semibold uppercase tracking-widest text-gray">
+                Gestão
+              </p>
+            </div>
+          </div>
         </div>
 
         <h1 className="text-xl font-semibold text-white mb-1 text-center">

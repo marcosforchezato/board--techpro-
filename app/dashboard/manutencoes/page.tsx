@@ -336,12 +336,12 @@ export default function ManutencaoPage() {
     if (novoTipo === tipo) return;
 
     setTipo(novoTipo);
-    window.history.replaceState(null, "", `/manutencoes?tipo=${novoTipo}`);
+    router.replace(`/dashboard/manutencoes?tipo=${novoTipo}`);
   }
 
   return (
-    <main className="min-h-screen bg-background-dark px-6 py-6">
-      <div className="mx-auto w-full max-w-7xl">
+    <main className="min-h-full min-w-0 overflow-x-hidden bg-background-dark px-4 py-5 sm:px-5 lg:px-6">
+      <div className="w-full min-w-0">
         <div className="mb-5 flex shrink-0 flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div>
             <p className="mb-1 text-sm text-cyan">Manutenção</p>
@@ -376,8 +376,8 @@ export default function ManutencaoPage() {
           </div>
         </div>
 
-        <div className="grid gap-6 lg:grid-cols-[320px_1fr]">
-          <section className="rounded-xl border border-white/10 bg-white/[0.03]">
+        <div className="grid min-w-0 gap-6 lg:grid-cols-[320px_minmax(0,1fr)]">
+          <section className="min-w-0 rounded-xl border border-white/10 bg-white/[0.03]">
             <div className="flex items-center justify-between border-b border-white/10 px-5 py-4">
               <div>
                 <h2 className="font-medium text-white">{titulo}</h2>
@@ -448,7 +448,7 @@ export default function ManutencaoPage() {
             </div>
           </section>
 
-          <section className="rounded-xl border border-white/10 bg-white/[0.03]">
+          <section className="min-w-0 rounded-xl border border-white/10 bg-white/[0.03]">
             <form
               onSubmit={handleSubmit}
               className="flex min-h-0 flex-1 flex-col"
@@ -624,25 +624,24 @@ export default function ManutencaoPage() {
 
                     <div className="overflow-hidden rounded-lg border border-white/10">
                       <div className="permissions-scroll max-h-[min(300px,35vh)] overflow-y-auto">
-                        <table className="w-full min-w-[760px] table-fixed">
-                          <thead className="sticky top-0 z-10">
-                            <tr className="border-b border-white/10 bg-dark-blue">
-                              <th className="w-24 px-4 py-3 text-left text-xs font-medium text-gray">
+                        <table className="w-full table-fixed">
+                          <thead className="sticky top-0 z-10 bg-background-dark">
+                            <tr className="border-b border-white/10">
+                              <th className="w-[15%] px-3 py-3 text-left text-[11px] font-semibold text-gray">
                                 Código
                               </th>
-
-                              <th className="px-4 py-3 text-left text-xs font-medium text-gray">
+                              <th className="w-[35%] px-3 py-3 text-left text-[11px] font-semibold text-gray">
                                 Tela
                               </th>
-
-                              {NIVEIS.map((nivel) => (
-                                <th
-                                  key={nivel.valor}
-                                  className="w-36 px-3 py-3 text-center text-xs font-medium text-gray"
-                                >
-                                  {nivel.descricao}
-                                </th>
-                              ))}
+                              <th className="w-[16.66%] px-2 py-3 text-center text-[11px] font-semibold text-gray">
+                                Sem acesso
+                              </th>
+                              <th className="w-[16.66%] px-2 py-3 text-center text-[11px] font-semibold text-gray">
+                                Consulta
+                              </th>
+                              <th className="w-[16.66%] px-2 py-3 text-center text-[11px] font-semibold text-gray">
+                                Acesso
+                              </th>
                             </tr>
                           </thead>
 
@@ -652,13 +651,13 @@ export default function ManutencaoPage() {
                                 key={permissao.sigla}
                                 className="border-b border-white/5 last:border-0"
                               >
-                                <td className="w-24 px-4 py-3">
+                                <td className="w-24 px-2 py-3">
                                   <span className="inline-flex h-6 w-12 items-center justify-center rounded bg-white/5 px-2 py-1 text-[10px] font-semibold text-cyan">
                                     {permissao.sigla}
                                   </span>
                                 </td>
 
-                                <td className="px-4 py-3 text-sm text-white/80">
+                                <td className="px-2 py-3 text-sm text-white/80">
                                   {permissao.descricao}
                                 </td>
 
