@@ -66,42 +66,70 @@ Paleta de cores extraída dos materiais oficiais da TechPro:
 
 ---
 
-## Como executar
+
+## Como executar o projeto
 
 ### Pré-requisitos
 
-- Node.js 20.9 ou superior
-- npm
-- Git
+- Node.js e npm
+- PostgreSQL em execução
 
 ### Passo a passo
 
-1. Clone o repositório:
+1. Clone o repositório e acesse a pasta do projeto:
 
    ```bash
    git clone https://github.com/marcosforchezato/board--techpro-.git
-   ```
-
-2. Acesse a pasta do projeto:
-
-   ```bash
    cd board--techpro-
    ```
 
-3. Instale as dependências:
+2. Instale as dependências:
 
    ```bash
-   npm install
+   npm ci
    ```
 
-4. Inicie o servidor de desenvolvimento:
+3. Crie um banco de dados PostgreSQL vazio chamado `techpro`. Por exemplo, conectado ao PostgreSQL:
+
+   ```sql
+   CREATE DATABASE techpro;
+   ```
+
+4. Crie um arquivo `.env` na raiz do projeto com as configurações abaixo. Solicite acesso ao banco de dados e substitua o valor de `DATABASE_URL` pela conexão fornecida. Defina também um valor longo e aleatório para `JWT_SECRET`:
+
+   ```env
+   DATABASE_URL="Solicitar Acesso ao Banco de Dados"
+   JWT_SECRET="substitua-por-uma-chave-aleatoria-longa"
+   NEXT_PUBLIC_SISTEMA_GESTAO="true"
+   ```
+
+   `NEXT_PUBLIC_SISTEMA_GESTAO` habilita as telas do sistema de gestão. Use `"false"` para mantê-las desabilitadas. O arquivo `.env` é ignorado pelo Git; não compartilhe nem versione segredos.
+
+5. Aplique as migrações, gere o Prisma Client e carregue os dados iniciais:
+
+   ```bash
+   npx prisma migrate dev
+   npx prisma generate
+   npx prisma db seed
+   ```
+
+6. Inicie o servidor de desenvolvimento:
 
    ```bash
    npm run dev
    ```
 
-5. Acesse [http://localhost:3000](http://localhost:3000) no navegador.
+7. Acesse [http://localhost:3000](http://localhost:3000) no navegador.
 
-Para encerrar o servidor, pressione `Ctrl+C` no terminal.
+O seed cria o usuário administrador `admin` com a senha inicial `0000`. Use essas credenciais apenas no ambiente local e altere a senha antes de disponibilizar o sistema.
+
+### Executar em modo de produção
+
+Depois de configurar as variáveis de ambiente e o banco de dados, gere a versão de produção e inicie o servidor:
+
+```bash
+npm run build
+npm run start
+```
 
 ---
